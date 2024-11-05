@@ -6,7 +6,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
 
-export default function NavItem({ label, href }: NavOption) {
+interface NavItemProps extends NavOption {
+  customClass?: string;
+}
+
+export default function NavItem({ label, href, customClass }: NavItemProps) {
   const pathname = usePathname();
 
   let isActive: boolean = false;
@@ -17,16 +21,15 @@ export default function NavItem({ label, href }: NavOption) {
   }
 
   return (
-    <div className="flex w-[160px] h-full text-xl text-primary font-semibold">
-      <Link
-        className={clsx(
-          "uppercase text-center w-full py-4 border-b-2",
-          isActive ? "border-b-primary" : "border-b-secondary"
-        )}
-        href={href}
-      >
-        {label}
-      </Link>
-    </div>
+    <Link
+      className={clsx(
+        "uppercase text-white w-full py-2 border-b-2",
+        isActive ? "border-b-white" : "border-b-secondary",
+        customClass
+      )}
+      href={href}
+    >
+      {label}
+    </Link>
   );
 }
