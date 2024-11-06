@@ -6,11 +6,11 @@ export const NavOptions: NavOption[] = [
     href: "/",
   },
   {
-    label: "Dashboard",
-    href: "/dashboard",
-  },
-  {
     label: "Expos",
     href: "/expos",
+  },
+  {
+    label: "Profile",
+    href: "/profile",
   },
 ];

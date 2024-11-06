@@ -11,6 +11,7 @@ export default function SignOut() {
   return (
     <Button
       size="sm"
+      variant="outline"
       //onClick={() => signOut({ callbackUrl: "/" })}
       onClick={() => signOut({ redirectUrl: "/" })}
     >

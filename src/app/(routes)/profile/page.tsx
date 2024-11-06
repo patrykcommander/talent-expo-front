@@ -1,20 +1,19 @@
 import React from "react";
-import { verifyIfUserAuthenticated } from "@/lib/verifyIfUserAuthenticated";
-import { redirect } from "next/navigation";
-import { NextAuthUser } from "@/types";
 import UserProfileContainer from "@/components/user-profile/user-profile-container/user-profile-contaier";
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 
 export default async function page() {
-  const user: NextAuthUser | undefined = await verifyIfUserAuthenticated();
+  const { userId } = await auth();
 
-  if (!user) {
-    redirect("/");
+  if (userId === null) {
+    redirect("/home");
   }
 
   return (
     <>
-      {user !== undefined ? (
-        <UserProfileContainer user={user} />
+      {userId !== null ? (
+        <UserProfileContainer user={userId} />
       ) : (
         <div>Empty state</div>
       )}

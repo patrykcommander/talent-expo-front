@@ -13,18 +13,18 @@ interface NavItemProps extends NavOption {
 export default function NavItem({ label, href, customClass }: NavItemProps) {
   const pathname = usePathname();
 
-  let isActive: boolean = false;
+  let isCurrentDir: boolean = false;
   if (label !== "Home") {
-    isActive = pathname.includes(label.toLowerCase());
+    isCurrentDir = pathname.includes(label.toLowerCase());
   } else {
-    isActive = pathname === "/";
+    isCurrentDir = pathname === "/";
   }
 
   return (
     <Link
       className={clsx(
         "uppercase text-white w-full py-2 border-b-2",
-        isActive ? "border-b-white" : "border-b-secondary",
+        isCurrentDir ? "border-b-white" : "border-b-secondary",
         customClass
       )}
       href={href}
