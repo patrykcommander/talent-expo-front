@@ -2,7 +2,6 @@
 
 import React from "react";
 import { Button } from "../ui/button";
-import { signOut } from "next-auth/react";
 import { useClerk } from "@clerk/nextjs";
 
 export default function SignOut() {
@@ -12,7 +11,6 @@ export default function SignOut() {
     <Button
       size="sm"
       variant="outline"
-      //onClick={() => signOut({ callbackUrl: "/" })}
       onClick={() => signOut({ redirectUrl: "/" })}
     >
       Sign Out

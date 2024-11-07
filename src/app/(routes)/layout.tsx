@@ -13,6 +13,7 @@ export default async function layout({
 
   return (
     <main className="flex flex-col items-center w-full">
+      <div className="h-[36px] bg-primary"></div>
       <div className="flex flex-row items-center justify-between lg:justify-around w-full sticky left-0 top-0 bg-primary h-[100px]">
         <Logo />
         <MobileMenu userId={userId} />

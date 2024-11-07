@@ -13,7 +13,7 @@ export default async function page() {
   return (
     <>
       {userId !== null ? (
-        <UserProfileContainer user={userId} />
+        <UserProfileContainer userId={userId} />
       ) : (
         <div>Empty state</div>
       )}

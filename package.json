@@ -6,16 +6,25 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db:generate": "npx prisma generate",
+    "db:push": "npx prisma db push",
+    "db:studio": "prisma studio",
+    "db:drop": "prisma migrate reset"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.2.0",
+    "@octokit/core": "^6.1.2",
+    "@prisma/client": "^5.22.0",
+    "@radix-ui/react-dialog": "^1.1.2",
     "@radix-ui/react-slot": "^1.1.0",
+    "@tanstack/react-query": "^5.59.20",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
     "lucide-react": "^0.454.0",
     "next": "14.1.1",
-    "next-auth": "^4.24.10",
+    "octokit": "^4.0.2",
     "react": "^18",
     "react-dom": "^18",
     "shadcn": "^2.1.4",
@@ -30,6 +39,7 @@
     "eslint": "^8",
     "eslint-config-next": "14.1.1",
     "postcss": "^8",
+    "prisma": "^5.22.0",
     "tailwindcss": "^3.3.0",
     "typescript": "^5"
   }
