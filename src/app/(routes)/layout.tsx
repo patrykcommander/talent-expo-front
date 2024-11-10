@@ -12,7 +12,7 @@ export default async function layout({
   const { userId } = await auth();
 
   return (
-    <main className="flex flex-col items-center w-full">
+    <main className="flex flex-col items-center w-full pb-8">
       <div className="h-[36px] bg-primary"></div>
       <div className="flex flex-row items-center justify-between lg:justify-around w-full sticky left-0 top-0 bg-primary h-[100px]">
         <Logo />
@@ -20,7 +20,9 @@ export default async function layout({
         <NavBar />
         <LogginButtons />
       </div>
-      <div className="flex-1 items-center justify-center w-3/5">{children}</div>
+      <div className="flex-1 items-center justify-center w-4/5 md:w-3/5">
+        {children}
+      </div>
     </main>
   );
 }

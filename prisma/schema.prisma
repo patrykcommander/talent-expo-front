@@ -13,14 +13,57 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum ROLE {
+  USER
+  ORGANIZER
+}
+
 model User {
-  id             String   @id @default(uuid())
-  clerkId        String   @unique
+  id             String       @id @default(uuid())
+  clerkId        String       @unique
+  role           ROLE         @default(USER)
   name           String
   email          String
   imageUrl       String?
   linkedInUrl    String?
   githubUserName String?
-  created_at     DateTime @default(now())
-  updated_at     DateTime @default(now())
+  bio            String?      @db.Text
+  location       String?      @db.VarChar(100)
+  phoneNumber    String?      @db.VarChar(14)
+  created_at     DateTime     @default(now())
+  updated_at     DateTime     @default(now())
+  education      Education[]
+  experience     Experience[]
+}
+
+model Education {
+  id           String    @id @default(uuid())
+  userClerkId  String
+  user         User      @relation(fields: [userClerkId], references: [clerkId])
+  degree       String
+  thesisTopic  String?
+  institution  String
+  fieldOfStudy String?
+  grade        String?
+  startDate    DateTime
+  endDate      DateTime?
+  isActive     Boolean   @default(false)
+  created_at   DateTime  @default(now())
+  updated_at   DateTime  @default(now())
+}
+
+model Experience {
+  id             String    @id @default(uuid())
+  userClerkId    String
+  user           User      @relation(fields: [userClerkId], references: [clerkId])
+  role           String
+  companyName    String
+  location       String
+  description    String?   @db.Text
+  employmentType String?
+  isActive       Boolean   @default(false)
+  startDate      DateTime
+  endDate        DateTime?
+  created_at     DateTime  @default(now())
+  updated_at     DateTime  @default(now())
 }

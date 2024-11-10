@@ -14,7 +14,7 @@ export default function EmptyState({ message, customClass }: EmptyStateProps) {
   );
 
   return (
-    <div className="flex items-center justify-center">
+    <div className="flex items-center justify-center w-full">
       <Card className={customClassString}>{message}</Card>
     </div>
   );

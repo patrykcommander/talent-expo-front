@@ -1,9 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { GithubRepo } from "@/types";
 import { Card } from "@/components/ui/card";
-import clsx from "clsx";
 import { formatDate, formatDistance, parseISO } from "date-fns";
 import {
   Dialog,
