@@ -27,20 +27,23 @@ export type User = {
   experience: Experience[];
 };
 
-export type Education = {
-  id: string;
-  userClerkId: string;
+export type EducationFormEntry = {
   degree: string;
   institution: string;
-  fieldOfStudy?: string | null;
-  grade?: string | null;
+  fieldOfStudy?: string;
+  grade?: string;
   thesisTopic?: string;
   isActive: boolean;
   startDate: Date;
-  endDate?: Date | null;
+  endDate?: Date;
+};
+
+export interface Education extends EducationFormEntry {
+  id: string;
+  userClerkId: string;
   created_at: Date;
   updated_at: Date;
-};
+}
 
 export type Experience = {
   id: string;
@@ -52,7 +55,7 @@ export type Experience = {
   employmentType?: string;
   isActive: boolean;
   startDate: Date;
-  endDate?: Date | null;
+  endDate?: Date;
   created_at: Date;
   updated_at: Date;
 };

@@ -11,6 +11,6 @@ export const NavOptions: NavOption[] = [
   },
   {
     label: "Profile",
-    href: "/profile",
+    href: "/profile/me",
   },
 ];

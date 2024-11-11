@@ -20,7 +20,7 @@ export default async function UserProfileContainer({
     <Suspense fallback={<div>Loading...</div>}>
       {user ? (
         <div className="flex flex-col w-full gap-4">
-          <div className="flex flex-col lg:flex-row gap-8 w-full pt-8">
+          <div className="flex flex-col lg:flex-row gap-8 w-full">
             <Main user={user} />
           </div>
           <div className="flex flex-col justify-evenly xl:flex-row gap-4">

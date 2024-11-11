@@ -15,7 +15,7 @@ export default function ProfileMain({ user }: ProfileMainProps) {
     <Card className="flex flex-col lg:w-1/3 h-max items-center gap-4 min-w-[300px]">
       <div className="flex flex-col w-full items-center gap-4">
         <div className="flex flex-row w-full items-center justify-end">
-          <Link className="flex gap-2" href="/profile/edit">
+          <Link className="flex gap-2" href="/profile/me/edit">
             <Edit2 color="#001E47" />
             Edit
           </Link>
