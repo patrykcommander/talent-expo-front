@@ -12,7 +12,7 @@ import { Diamond } from "lucide-react";
 
 interface UserExperiencePopoverProps {
   isActive: boolean;
-  description: string | undefined;
+  description: string | null;
 }
 
 export default function UserExperienceAccordion({

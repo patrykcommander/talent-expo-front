@@ -1,3 +1,10 @@
+import { userProfileEditFormSchema } from "@/server/schemas/userProfileEditFormSchema";
+import { FieldError, FieldErrorsImpl, Merge } from "react-hook-form";
+import { z } from "zod";
+
+export const dateFormatRegex =
+  /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/;
+
 export type NavOption = {
   label: string;
   href: string;
@@ -30,12 +37,12 @@ export type User = {
 export type EducationFormEntry = {
   degree: string;
   institution: string;
-  fieldOfStudy?: string;
-  grade?: string;
-  thesisTopic?: string;
+  fieldOfStudy: string;
+  grade: string | null;
+  thesisTopic: string | null;
   isActive: boolean;
   startDate: Date;
-  endDate?: Date;
+  endDate: Date | null;
 };
 
 export interface Education extends EducationFormEntry {
@@ -51,19 +58,37 @@ export type Experience = {
   role: string;
   companyName: string;
   location: string;
-  description?: string;
-  employmentType?: string;
+  description: string | null;
+  employmentType: string | null;
   isActive: boolean;
   startDate: Date;
-  endDate?: Date;
+  endDate: Date | null;
   created_at: Date;
   updated_at: Date;
 };
 
 export type GithubRepo = {
   name: string;
-  description?: string;
+  description: string | null;
   created_at: string;
-  pushed_at?: string;
-  language?: string;
+  pushed_at: string | null;
+  language: string | null;
 };
+
+export type FullProfileFormSchemaType = z.infer<
+  ReturnType<typeof userProfileEditFormSchema>
+>;
+
+export type EducationError = Merge<
+  FieldError,
+  FieldErrorsImpl<{
+    degree: string;
+    institution: string;
+    isActive: boolean;
+    startDate: Date;
+    thesisTopic: string;
+    fieldOfStudy: string;
+    grade: string;
+    endDate: Date;
+  }>
+>;

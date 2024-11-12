@@ -5,7 +5,6 @@ import { Experience } from "@/types";
 import { Card } from "@/components/ui/card";
 import { Calendar } from "lucide-react";
 import UserExperienceAccordion from "./user-experience-accordion";
-import { Button } from "@/components/ui/button";
 
 interface UserExperienceComponentProps {
   experience: Experience;

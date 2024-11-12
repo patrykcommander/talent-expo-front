@@ -43,7 +43,7 @@ model Education {
   degree       String
   thesisTopic  String?
   institution  String
-  fieldOfStudy String?
+  fieldOfStudy String
   grade        String?
   startDate    DateTime
   endDate      DateTime?

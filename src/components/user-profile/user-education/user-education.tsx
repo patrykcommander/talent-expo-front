@@ -1,13 +1,12 @@
 import React from "react";
-import { User } from "@/types";
+import { Education, EducationFormEntry, User } from "@/types";
 import EmptyState from "@/components/empty-state/empty-state";
 import { Card } from "@/components/ui/card";
 import UserEducationEntry from "./user-education-component";
+import { sortByIsActive } from "@/lib/sortByIsActive";
 
 export default function UserEducation({ user }: { user: User }) {
-  const sortedEducation = user.education.sort(
-    (a, b) => Number(b.isActive) - Number(a.isActive)
-  );
+  const sortedEducation = sortByIsActive(user.education);
 
   return (
     <Card className="flex flex-col w-full p-4 gap-4">

@@ -1,5 +1,5 @@
 import { formatDate } from "date-fns";
 
-export const formatISO = (date: Date) => {
-  return formatDate(new Date(date), "dd/MMMM/yyyy");
+export const formatISO = (date: Date | null) => {
+  return date ? formatDate(new Date(date), "dd/MM/yyyy") : null;
 };

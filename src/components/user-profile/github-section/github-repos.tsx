@@ -11,7 +11,7 @@ import { ELEMENTS_PER_PAGE } from "./pagination";
 import EmptyState from "@/components/empty-state/empty-state";
 import { Skeleton } from "@/components/ui/skeleton";
 
-const data = [];
+// const data: any = [];
 
 export default function GithubRepos({
   githubUserName,
@@ -29,15 +29,15 @@ export default function GithubRepos({
     setPage(currentPage + 1);
   };
 
-  // const { isPending, isError, error, data, isFetching, isPlaceholderData } =
-  //   useQuery({
-  //     queryKey: ["projects", currentPage],
-  //     queryFn: () =>
-  //       getUserRepos(githubUserName, currentPage, ELEMENTS_PER_PAGE),
-  //     placeholderData: keepPreviousData,
-  //   });
+  const { isPending, isError, error, data, isFetching, isPlaceholderData } =
+    useQuery({
+      queryKey: ["projects", currentPage],
+      queryFn: () =>
+        getUserRepos(githubUserName, currentPage, ELEMENTS_PER_PAGE),
+      placeholderData: keepPreviousData,
+    });
 
-  const isFetching = false;
+  // const isFetching = false;
 
   return (
     <div className="flex flex-col gap-4">
