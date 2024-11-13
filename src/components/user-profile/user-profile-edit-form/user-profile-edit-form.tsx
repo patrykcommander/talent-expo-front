@@ -15,51 +15,36 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Education, EducationFormEntry, User } from "@/types";
+import { EducationFormEntry, ExperienceFormEntry, User } from "@/types";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import UserProfileEducationComponent from "./user-profile-education-component";
-import replaceNullWithUndefined from "@/lib/replaceNullWithUndefined";
+import UserProfileEditEducation from "./user-profile-edit-education";
 import { sortByIsActive } from "@/lib/sortByIsActive";
 import { updateUserProfile } from "@/server/actions/updateUserProfile";
+import { blankEducation, blankExperience } from "./form-constants";
+import UserProfileEditExperience from "./user-profile-edit-experience";
+import setFormDefaultValues from "@/lib/setFormDefaultValues";
 
-const blankEducation: EducationFormEntry = {
-  degree: "",
-  institution: "",
-  fieldOfStudy: "",
-  grade: null,
-  thesisTopic: null,
-  isActive: false,
-  startDate: new Date(),
-  endDate: null,
-};
+interface UserEditProfileFormProps {
+  user: User;
+}
 
-export default function UserEditProfileForm({ user }: { user: User }) {
+export default function UserEditProfileForm({
+  user,
+}: UserEditProfileFormProps) {
   const formSchema = userProfileEditFormSchema();
 
-  // remove null values from the education objects, so those can be used as default values (null can't be a default value for an input - hardship with validation etc.)
-  const userEducation = replaceNullWithUndefined(user.education);
-  const sortedUserEducation: Education[] = sortByIsActive(userEducation);
+  const userEducation = setFormDefaultValues(
+    user.education
+  ) as EducationFormEntry[];
 
-  const originalUserEducationIds = sortedUserEducation.map(
-    (education) => education.id
-  );
+  const userExperience = setFormDefaultValues(
+    user.experience
+  ) as ExperienceFormEntry[];
 
-  const [educationIds, setEducationIds] = useState<string[] | []>(
-    originalUserEducationIds
-  );
-
-  const handleRemoveEducationId = (educationIndex: number) => {
-    const educationIdToRemove = educationIds[educationIndex];
-    console.log(educationIdToRemove);
-
-    setEducationIds(educationIds.filter((id) => id !== educationIdToRemove));
-  };
-
-  const handleAddEducationId = (educationId: string) => {
-    setEducationIds((prevIds) => [...prevIds, educationId]);
-  };
+  const sortedUserEducation = sortByIsActive(userEducation);
+  const sortedUserExperience = sortByIsActive(userExperience);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -71,23 +56,23 @@ export default function UserEditProfileForm({ user }: { user: User }) {
       location: user.location || "",
       phoneNumber: user.phoneNumber || "",
       education: sortedUserEducation || [],
-      //experience: user.experience || [],
+      experience: sortedUserExperience || [],
     },
   });
   const errors = form.formState.errors;
 
-  const { fields, append, remove } = useFieldArray({
+  const educationFieldArray = useFieldArray({
     name: "education",
     control: form.control,
   });
 
+  const experienceFieldArray = useFieldArray({
+    name: "experience",
+    control: form.control,
+  });
+
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    updateUserProfile(
-      user.clerkId,
-      values,
-      originalUserEducationIds,
-      educationIds
-    ).then((res) => {
+    updateUserProfile(user.clerkId, values).then((res) => {
       if (res && res.success) {
         toast.success(res.message);
       } else if (res && !res.success) {
@@ -97,6 +82,9 @@ export default function UserEditProfileForm({ user }: { user: User }) {
       }
     });
   };
+
+  // TODO:
+  // when one of the education sections is removed and a new one added, the End Date field takes the value of the removed section
 
   return (
     <>
@@ -195,15 +183,14 @@ export default function UserEditProfileForm({ user }: { user: User }) {
           <div className="w-full">
             <p className="font-semibold text-lg pb-2">Education</p>
             <div className="flex flex-col gap-8">
-              {fields.map((field, index) => (
-                <UserProfileEducationComponent
+              {educationFieldArray.fields.map((field, index) => (
+                <UserProfileEditEducation
                   key={field.id}
                   index={index}
                   field={field}
                   errors={errors?.education?.[index] ?? undefined}
                   register={form.register}
-                  removeEducation={remove}
-                  handleRemoveEducationId={handleRemoveEducationId}
+                  removeEducation={educationFieldArray.remove}
                   setFormValue={form.setValue}
                 />
               ))}
@@ -212,11 +199,36 @@ export default function UserEditProfileForm({ user }: { user: User }) {
                 variant="default"
                 size="lg"
                 onClick={() => {
-                  append(blankEducation);
-                  handleAddEducationId("");
+                  educationFieldArray.append(blankEducation);
                 }}
               >
                 Add new Education
+              </Button>
+            </div>
+          </div>
+          <div className="w-full">
+            <p className="font-semibold text-lg pb-2">Experience</p>
+            <div className="flex flex-col gap-8">
+              {experienceFieldArray.fields.map((field, index) => (
+                <UserProfileEditExperience
+                  key={field.id}
+                  index={index}
+                  field={field}
+                  errors={errors?.experience?.[index] ?? undefined}
+                  register={form.register}
+                  removeExperience={experienceFieldArray.remove}
+                  setFormValue={form.setValue}
+                />
+              ))}
+              <Button
+                type="button"
+                variant="default"
+                size="lg"
+                onClick={() => {
+                  experienceFieldArray.append(blankExperience);
+                }}
+              >
+                Add new Experience
               </Button>
             </div>
           </div>

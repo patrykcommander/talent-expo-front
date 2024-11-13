@@ -12,7 +12,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { EducationError, FullProfileFormSchemaType } from "@/types";
+import { ExperienceError, FullProfileFormSchemaType } from "@/types";
+import { Textarea } from "@/components/ui/textarea";
 
 const ErrorMessage: React.FC<{ message: string | undefined }> = ({
   message,
@@ -22,61 +23,87 @@ const ErrorMessage: React.FC<{ message: string | undefined }> = ({
   );
 };
 
-interface UserProfileEducationComponentProps {
+interface UserProfileEditExperienceProps {
   index: number;
-  field: FieldArrayWithId<FullProfileFormSchemaType, "education">;
-  errors: EducationError | undefined;
+  field: FieldArrayWithId<FullProfileFormSchemaType, "experience">;
+  errors: ExperienceError | undefined;
   register: UseFormRegister<FullProfileFormSchemaType>;
-  removeEducation: UseFieldArrayRemove;
-  handleRemoveEducationId: (educationIndex: number) => void;
+  removeExperience: UseFieldArrayRemove;
   setFormValue: UseFormSetValue<FullProfileFormSchemaType>;
 }
 
-export default function UserProfileEducationComponent({
+export default function UserProfileEditExperience({
   index,
   field,
   errors,
   register,
-  removeEducation,
-  handleRemoveEducationId,
+  removeExperience,
   setFormValue,
-}: UserProfileEducationComponentProps) {
+}: UserProfileEditExperienceProps) {
   const [isActive, setIsActive] = useState<boolean>(field.isActive);
 
   return (
     <Card className="flex flex-col gap-4">
       <p className="font-semibold text-lg">#{index + 1}</p>
       <div className="flex flex-col gap-2">
-        Institution
-        {errors && errors.institution && (
-          <ErrorMessage message={errors.institution.message} />
+        Company Name
+        {errors && errors.companyName && (
+          <ErrorMessage message={errors.companyName.message} />
         )}
-        <Input {...register(`education.${index}.institution`)} type="text" />
+        <Input {...register(`experience.${index}.companyName`)} type="text" />
       </div>
       <div className="flex flex-col gap-2">
-        Degree
-        {errors && errors.degree && (
-          <ErrorMessage message={errors.degree.message} />
+        Role
+        {errors && errors.role && (
+          <ErrorMessage message={errors.role.message} />
         )}
-        <Input {...register(`education.${index}.degree`)} type="text" />
+        <Input {...register(`experience.${index}.role`)} type="text" />
       </div>
       <div className="flex flex-col gap-2">
-        Field of study
-        {errors && errors.fieldOfStudy && (
-          <ErrorMessage message={errors.fieldOfStudy.message} />
+        Location
+        {errors && errors.location && (
+          <ErrorMessage message={errors.location.message} />
         )}
-        <Input {...register(`education.${index}.fieldOfStudy`)} type="text" />
+        <Input {...register(`experience.${index}.location`)} type="text" />
+      </div>
+      <div className="flex flex-col gap-2">
+        Employment Type
+        {errors && errors.employmentType && (
+          <ErrorMessage message={errors.employmentType.message} />
+        )}
+        <Input
+          {...register(`experience.${index}.employmentType`)}
+          type="text"
+        />
+      </div>
+      <div className="flex flex-col w-full h-[200px] gap-2">
+        <p>Description</p>
+        {errors && errors.description && (
+          <div className="flex items-center">
+            <ErrorMessage message={errors.description.message} />
+          </div>
+        )}
+        <Controller
+          name={`experience.${index}.description`}
+          render={({ field }) => (
+            <Textarea
+              className="w-full h-full"
+              defaultValue={field.value}
+              onChange={field.onChange}
+            />
+          )}
+        />
       </div>
       <div className="flex flex-col gap-2 items-start">
         <div className="flex flex-row gap-4 items-center">
-          <p>Is Active Study?</p>
+          <p>Is Active Position?</p>
           <Controller
-            name={`education.${index}.isActive`}
+            name={`experience.${index}.isActive`}
             render={({ field }) => (
               <Checkbox
                 checked={field.value}
                 onCheckedChange={() => {
-                  setFormValue(`education.${index}.endDate`, null);
+                  setFormValue(`experience.${index}.endDate`, undefined);
                   setIsActive(!isActive);
                   field.onChange(!field.value);
                 }}
@@ -90,7 +117,7 @@ export default function UserProfileEducationComponent({
               <p className="whitespace-nowrap">Start Date</p>
               <div className="w-full">
                 <Controller
-                  name={`education.${index}.startDate`}
+                  name={`experience.${index}.startDate`}
                   render={({ field }) => (
                     <Input
                       type="date"
@@ -100,8 +127,7 @@ export default function UserProfileEducationComponent({
                           : new Date(field.value).toISOString().split("T")[0]
                       }
                       onChange={(e) => {
-                        const date = e.target.valueAsDate;
-                        field.onChange(date);
+                        field.onChange(e.target.valueAsDate);
                       }}
                     />
                   )}
@@ -121,19 +147,17 @@ export default function UserProfileEducationComponent({
                 <p className="whitespace-nowrap">End Date</p>
                 <div className="w-full">
                   <Controller
-                    name={`education.${index}.endDate`}
+                    name={`experience.${index}.endDate`}
                     render={({ field }) => (
                       <Input
                         type="date"
                         defaultValue={
-                          field.value instanceof Date &&
-                          !isNaN(field.value.getTime())
+                          field.value instanceof Date
                             ? field.value.toISOString().split("T")[0]
-                            : ""
+                            : undefined
                         }
                         onChange={(e) => {
-                          const date = e.target.valueAsDate;
-                          field.onChange(date);
+                          field.onChange(e.target.valueAsDate || undefined);
                         }}
                       />
                     )}
@@ -149,28 +173,13 @@ export default function UserProfileEducationComponent({
           )}
         </div>
       </div>
-      <div className="flex flex-col gap-2">
-        Grade
-        {errors && errors.grade && (
-          <ErrorMessage message={errors.grade.message} />
-        )}
-        <Input {...register(`education.${index}.grade`)} type="text" />
-      </div>
-      <div className="flex flex-col gap-2">
-        Thesis topic
-        {errors && errors.thesisTopic && (
-          <ErrorMessage message={errors.thesisTopic.message} />
-        )}
-        <Input {...register(`education.${index}.thesisTopic`)} type="text" />
-      </div>
       <div className="flex justify-end">
         <Button
           type="button"
           variant="destructive"
           size="lg"
           onClick={() => {
-            removeEducation(index);
-            handleRemoveEducationId(index);
+            removeExperience(index);
           }}
         >
           Remove Section

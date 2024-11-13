@@ -2,9 +2,6 @@ import { userProfileEditFormSchema } from "@/server/schemas/userProfileEditFormS
 import { FieldError, FieldErrorsImpl, Merge } from "react-hook-form";
 import { z } from "zod";
 
-export const dateFormatRegex =
-  /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/;
-
 export type NavOption = {
   label: string;
   href: string;
@@ -16,57 +13,6 @@ export type NextAuthUser = {
   image?: string | null;
 };
 
-export type User = {
-  id: string;
-  clerkId: string;
-  role: "USER" | "ORGANIZER";
-  name: string;
-  email: string;
-  imageUrl?: string | null;
-  linkedInUrl?: string | null;
-  githubUserName?: string | null;
-  bio?: string | null;
-  location?: string | null;
-  phoneNumber?: string | null;
-  created_at: Date;
-  updated_at: Date;
-  education: Education[];
-  experience: Experience[];
-};
-
-export type EducationFormEntry = {
-  degree: string;
-  institution: string;
-  fieldOfStudy: string;
-  grade: string | null;
-  thesisTopic: string | null;
-  isActive: boolean;
-  startDate: Date;
-  endDate: Date | null;
-};
-
-export interface Education extends EducationFormEntry {
-  id: string;
-  userClerkId: string;
-  created_at: Date;
-  updated_at: Date;
-}
-
-export type Experience = {
-  id: string;
-  userClerkId: string;
-  role: string;
-  companyName: string;
-  location: string;
-  description: string | null;
-  employmentType: string | null;
-  isActive: boolean;
-  startDate: Date;
-  endDate: Date | null;
-  created_at: Date;
-  updated_at: Date;
-};
-
 export type GithubRepo = {
   name: string;
   description: string | null;
@@ -75,9 +21,77 @@ export type GithubRepo = {
   language: string | null;
 };
 
-export type FullProfileFormSchemaType = z.infer<
-  ReturnType<typeof userProfileEditFormSchema>
->;
+export type User = {
+  id: string;
+  clerkId: string;
+  role: "USER" | "ORGANIZER";
+  name: string;
+  email: string;
+  imageUrl: string | null;
+  linkedInUrl: string | null;
+  githubUserName: string | null;
+  bio: string | null;
+  location: string | null;
+  phoneNumber: string | null;
+  created_at: Date;
+  updated_at: Date;
+  education: EducationPrisma[];
+  experience: ExperiencePrisma[];
+};
+
+export type EducationFormEntry = {
+  id: string;
+  degree: string;
+  institution: string;
+  fieldOfStudy: string;
+  grade: string;
+  thesisTopic: string;
+  isActive: boolean;
+  startDate: Date;
+  endDate: Date | undefined;
+};
+
+export interface EducationPrisma {
+  id: string;
+  userClerkId: string;
+  created_at: Date;
+  updated_at: Date;
+  degree: string;
+  institution: string;
+  fieldOfStudy: string;
+  grade?: string;
+  thesisTopic?: string;
+  isActive: boolean;
+  startDate: Date;
+  endDate?: Date;
+}
+
+export type ExperienceFormEntry = {
+  id: string;
+  role: string;
+  companyName: string;
+  location: string;
+  description: string;
+  employmentType: string;
+  isActive: boolean;
+  startDate: Date;
+  endDate: Date | undefined;
+};
+
+export type ExperiencePrisma = {
+  id: string;
+  userClerkId: string;
+  created_at: Date;
+  updated_at: Date;
+  role: string;
+  companyName: string;
+  location: string;
+  description?: string;
+  employmentType?: string;
+  isActive: boolean;
+  startDate: Date;
+  endDate?: Date;
+};
 
 export type EducationError = Merge<
   FieldError,
@@ -85,10 +99,28 @@ export type EducationError = Merge<
     degree: string;
     institution: string;
     isActive: boolean;
-    startDate: Date;
     thesisTopic: string;
     fieldOfStudy: string;
     grade: string;
+    startDate: Date;
     endDate: Date;
   }>
+>;
+
+export type ExperienceError = Merge<
+  FieldError,
+  FieldErrorsImpl<{
+    role: string;
+    companyName: string;
+    location: string;
+    description: string;
+    employmentType: string;
+    isActive: boolean;
+    startDate: Date;
+    endDate: Date;
+  }>
+>;
+
+export type FullProfileFormSchemaType = z.infer<
+  ReturnType<typeof userProfileEditFormSchema>
 >;

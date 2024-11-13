@@ -41,9 +41,9 @@ model Education {
   userClerkId  String
   user         User      @relation(fields: [userClerkId], references: [clerkId])
   degree       String
-  thesisTopic  String?
   institution  String
   fieldOfStudy String
+  thesisTopic  String?
   grade        String?
   startDate    DateTime
   endDate      DateTime?
