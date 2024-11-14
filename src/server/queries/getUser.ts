@@ -15,7 +15,11 @@ export const getUser = async (userId: string): Promise<User | null> => {
             startDate: "desc",
           },
         },
-        experience: true,
+        experience: {
+          orderBy: {
+            startDate: "desc",
+          },
+        },
       },
     });
 

@@ -13,7 +13,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
+    <ClerkProvider afterSignInUrl="/profile" afterSignUpUrl="/profile">
       <html lang="en">
         <body className="w-full">{children}</body>
       </html>

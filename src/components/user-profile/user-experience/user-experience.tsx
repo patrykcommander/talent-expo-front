@@ -1,13 +1,12 @@
 import React from "react";
-import { User } from "@/types";
+import { ExperiencePrisma, User } from "@/types";
 import EmptyState from "@/components/empty-state/empty-state";
 import { Card } from "@/components/ui/card";
 import UserExperienceComponent from "./user-experience-component";
+import { sortByIsActive } from "@/lib/sortByIsActive";
 
 export default function UserExperience({ user }: { user: User }) {
-  const sortedExperience = user.experience.sort(
-    (a, b) => Number(b.isActive) - Number(a.isActive)
-  );
+  const sortedExperience: ExperiencePrisma[] = sortByIsActive(user.experience);
 
   return (
     <Card className="flex flex-col w-full p-4 gap-4">

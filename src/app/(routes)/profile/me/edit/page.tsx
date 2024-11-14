@@ -1,12 +1,12 @@
 import React from "react";
 import { redirect } from "next/navigation";
-import { auth } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs";
 import { getUser } from "@/server/queries/getUser";
 import { Card } from "@/components/ui/card";
 import UserEditProfileForm from "@/components/user-profile/user-profile-edit-form/user-profile-edit-form";
 
 export default async function page() {
-  const { userId } = await auth();
+  const { userId } = auth();
 
   if (!userId) {
     redirect("/");

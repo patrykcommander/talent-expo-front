@@ -1,10 +1,10 @@
 import React from "react";
 import SignOut from "../buttons/sign-out";
-import { auth } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs";
 import RedirectButton from "../buttons/redirect-button";
 
-export default async function LogginButtons() {
-  const { userId } = await auth();
+export default function LogginButtons() {
+  const { userId } = auth();
 
   return (
     <div className="hidden lg:flex lg:items-center lg:justify-center lg:w-4/12">

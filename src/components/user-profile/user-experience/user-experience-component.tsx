@@ -1,13 +1,13 @@
 import React from "react";
 import clsx from "clsx";
 import { formatISO } from "@/lib/date";
-import { Experience } from "@/types";
+import { ExperiencePrisma } from "@/types";
 import { Card } from "@/components/ui/card";
 import { Calendar } from "lucide-react";
 import UserExperienceAccordion from "./user-experience-accordion";
 
 interface UserExperienceComponentProps {
-  experience: Experience;
+  experience: ExperiencePrisma;
   isLastOne: boolean;
 }
 

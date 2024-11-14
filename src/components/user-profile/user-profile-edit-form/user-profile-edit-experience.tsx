@@ -28,7 +28,7 @@ interface UserProfileEditExperienceProps {
   field: FieldArrayWithId<FullProfileFormSchemaType, "experience">;
   errors: ExperienceError | undefined;
   register: UseFormRegister<FullProfileFormSchemaType>;
-  removeExperience: UseFieldArrayRemove;
+  removeExperience: (index: number) => void;
   setFormValue: UseFormSetValue<FullProfileFormSchemaType>;
 }
 
@@ -41,6 +41,12 @@ export default function UserProfileEditExperience({
   setFormValue,
 }: UserProfileEditExperienceProps) {
   const [isActive, setIsActive] = useState<boolean>(field.isActive);
+
+  // prevents an endDate default value from a removed section to appear in the added new section
+  let endDateDefaultValue: string | undefined = undefined;
+  if (field.endDate) {
+    endDateDefaultValue = field.endDate.toISOString().split("T")[0];
+  }
 
   return (
     <Card className="flex flex-col gap-4">

@@ -6,9 +6,6 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import replaceEmptyStringWithNull from "@/lib/replaceEmptyStringWithNull";
 
-// TODO
-// Finish the update process
-
 const findIndices = (
   array: string[] | [],
   condition: (id: string, index: number) => boolean
@@ -19,17 +16,16 @@ const findIndices = (
         .filter((index) => index !== -1)
     : [];
 
-const splitIds = (originalIds: string[] | [], newIds: string[] | []) => {
-  const educationIndexToCreate = findIndices(newIds, (id) => id === "");
+const splitIds = (originalIds: string[], newIds: string[]) => {
+  const indexToCreate = findIndices(newIds, (id) => id === null);
+  const indexToUpdate = findIndices(newIds, (id) => originalIds.includes(id));
+  const indexToDelete = findIndices(originalIds, (id) => !newIds.includes(id));
 
-  const educationIndexToUpdate: number[] | [] = findIndices(newIds, (id) =>
-    originalIds.includes(id)
-  );
-
-  const educationIndexToDelete = findIndices(
-    originalIds,
-    (id) => !newIds.includes(id)
-  );
+  return {
+    indexToCreate,
+    indexToUpdate,
+    indexToDelete,
+  };
 };
 
 export const updateUserProfile = async (
@@ -47,8 +43,10 @@ export const updateUserProfile = async (
       location,
       phoneNumber,
       education,
+      experience,
     } = values;
 
+    // Fetch the original education and experience IDs from the database
     const originalEducationIds: string[] = (
       await prisma.education.findMany({
         where: { userClerkId: userId },
@@ -59,39 +57,66 @@ export const updateUserProfile = async (
     ).map((education: { id: string }) => education.id);
 
     const originalExperienceIds: string[] = (
-      await prisma.education.findMany({
+      await prisma.experience.findMany({
         where: { userClerkId: userId },
-        select: {
-          id: true,
-        },
+        select: { id: true },
       })
     ).map((experience: { id: string }) => experience.id);
 
-    const educationIndexToCreate = findIndices(educationIds, (id) => id === "");
-    const educationIndexToUpdate: number[] =
-      origianlEducationIds.length > 0
-        ? findIndices(educationIds, (id) => origianlEducationIds.includes(id))
-        : [];
+    // Get new education and experience IDs
+    const newEducationIds = education.map((edu) => edu.id);
+    const newExperienceIds = experience.map((exp) => exp.id);
 
-    const educationIndexToDelete = findIndices(
-      origianlEducationIds,
-      (id) => !educationIds.includes(id)
+    // Split IDs into categories for create, update, and delete actions
+    const educationIndexes = splitIds(originalEducationIds, newEducationIds);
+    const experienceIndexes = splitIds(originalExperienceIds, newExperienceIds);
+
+    // Create, update, and delete education entries
+    // TODO remove or use the id property in rest of the created objects
+    const educationToCreate = educationIndexes.indexToCreate.map((index) => {
+      const { id, ...rest } = education[index];
+      return {
+        userClerkId: userId,
+        ...rest,
+      };
+    });
+
+    const educationToUpdate = educationIndexes.indexToUpdate.map((index) => {
+      const { id, ...rest } = education[index];
+
+      return {
+        where: { id: id },
+        data: { ...rest },
+      };
+    });
+
+    const educationIdsToDelete = educationIndexes.indexToDelete.map(
+      (index) => originalEducationIds[index]
     );
 
-    const educationToCreate = educationIndexToCreate.map((index) => ({
-      userClerkId: userId,
-      ...education[index],
-    }));
+    // Create, update, and delete experience entries
+    const experienceToCreate = experienceIndexes.indexToCreate.map((index) => {
+      const { id, ...rest } = experience[index];
+      return {
+        userClerkId: userId,
+        ...rest,
+      };
+    });
 
-    const educationToUpdate = educationIndexToUpdate.map((index) => ({
-      where: { id: educationIds[index] },
-      data: education[index],
-    }));
+    const experienceToUpdate = experienceIndexes.indexToUpdate.map((index) => {
+      const { id, ...rest } = experience[index];
 
-    const educationIdsToDelete = educationIndexToDelete.map(
-      (index) => origianlEducationIds[index]
+      return {
+        where: { id: id },
+        data: { ...rest },
+      };
+    });
+
+    const experienceIdsToDelete = experienceIndexes.indexToDelete.map(
+      (index) => originalExperienceIds[index]
     );
 
+    // Update the user's profile with new data
     await prisma.user.update({
       where: {
         clerkId: userId,
@@ -106,11 +131,14 @@ export const updateUserProfile = async (
         education: {
           update: educationToUpdate,
         },
+        experience: {
+          update: experienceToUpdate,
+        },
       },
     });
 
-    // delete removed education entries
-    if (educationIndexToDelete.length > 0) {
+    // Delete removed education entries
+    if (educationIdsToDelete.length > 0) {
       await prisma.education.deleteMany({
         where: {
           id: {
@@ -120,14 +148,34 @@ export const updateUserProfile = async (
       });
     }
 
-    // create new education entries
-    if (educationIndexToCreate.length > 0) {
+    // Create new education entries
+    if (educationToCreate.length > 0) {
       await prisma.education.createMany({
         data: educationToCreate,
       });
     }
 
+    // Delete removed experience entries
+    if (experienceIdsToDelete.length > 0) {
+      await prisma.experience.deleteMany({
+        where: {
+          id: {
+            in: experienceIdsToDelete,
+          },
+        },
+      });
+    }
+
+    // Create new experience entries
+    if (experienceToCreate.length > 0) {
+      await prisma.experience.createMany({
+        data: experienceToCreate,
+      });
+    }
+
+    // Revalidate the profile edit page
     revalidatePath("/profile/me/edit");
+
     return { success: true, message: "Profile updated" };
   } catch (err) {
     console.log("Error: ", err);

@@ -7,8 +7,11 @@ import RedirectButton from "../buttons/redirect-button";
 import SignOut from "../buttons/sign-out";
 import Link from "next/link";
 import clsx from "clsx";
+import { useAuth } from "@clerk/nextjs";
 
-export default function MobileMenu({ userId }: { userId: string | null }) {
+export default function MobileMenu() {
+  const { userId } = useAuth();
+
   const [isOpen, setIsOpen] = useState(false);
 
   const handleClick = () => {

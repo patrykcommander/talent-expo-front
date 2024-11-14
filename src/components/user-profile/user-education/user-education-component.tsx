@@ -1,17 +1,15 @@
 import React from "react";
-import { Education } from "@/types";
+import { EducationPrisma } from "@/types";
 import { formatISO } from "@/lib/date";
 import clsx from "clsx";
 import { Card } from "@/components/ui/card";
 
 interface UserEducationEntryProps {
-  education: Education;
-  isLastOne: boolean;
+  education: EducationPrisma;
 }
 
 export default function UserEducationEntry({
   education,
-  isLastOne,
 }: UserEducationEntryProps) {
   const classString = clsx(
     "flex flex-col gap-2 col-span-1 w-full p-4",
@@ -21,12 +19,7 @@ export default function UserEducationEntry({
   );
 
   return (
-    <div
-      className={clsx(
-        "flex w-full pb-4 text-md",
-        !isLastOne && "border-b-2 border-gray"
-      )}
-    >
+    <div className="flex w-full pb-4 text-md">
       <Card className={classString}>
         <div className="flex w-full gap-4">
           <p className="w-1/3">Istitution:</p>

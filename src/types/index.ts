@@ -59,11 +59,11 @@ export interface EducationPrisma {
   degree: string;
   institution: string;
   fieldOfStudy: string;
-  grade?: string;
-  thesisTopic?: string;
+  grade?: string | null;
+  thesisTopic?: string | null;
   isActive: boolean;
   startDate: Date;
-  endDate?: Date;
+  endDate?: Date | null;
 }
 
 export type ExperienceFormEntry = {
@@ -86,11 +86,11 @@ export type ExperiencePrisma = {
   role: string;
   companyName: string;
   location: string;
-  description?: string;
-  employmentType?: string;
+  description?: string | null;
+  employmentType?: string | null;
   isActive: boolean;
   startDate: Date;
-  endDate?: Date;
+  endDate?: Date | null;
 };
 
 export type EducationError = Merge<

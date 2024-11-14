@@ -1,10 +1,11 @@
 import React from "react";
-import UserProfileContainer from "@/components/user-profile/user-profile-container/user-profile-contaier";
-import { auth } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
+import UserProfileContainer from "@/components/user-profile/user-profile-container/user-profile-contaier";
+import EmptyState from "@/components/empty-state/empty-state";
 
-export default async function page() {
-  const { userId } = await auth();
+export default function page() {
+  const { userId } = auth();
 
   if (userId === null) {
     redirect("/home");
@@ -15,7 +16,7 @@ export default async function page() {
       {userId !== null ? (
         <UserProfileContainer userId={userId} />
       ) : (
-        <div>Empty state</div>
+        <EmptyState message="" />
       )}
     </>
   );

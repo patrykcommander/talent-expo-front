@@ -83,9 +83,6 @@ export default function UserEditProfileForm({
     });
   };
 
-  // TODO:
-  // when one of the education sections is removed and a new one added, the End Date field takes the value of the removed section
-
   return (
     <>
       <Toaster position="bottom-center" reverseOrder={false} gutter={8} />

@@ -27,7 +27,7 @@ interface UserProfileEditEducationProps {
   field: FieldArrayWithId<FullProfileFormSchemaType, "education">;
   errors: EducationError | undefined;
   register: UseFormRegister<FullProfileFormSchemaType>;
-  removeEducation: UseFieldArrayRemove;
+  removeEducation: (index: number) => void;
   setFormValue: UseFormSetValue<FullProfileFormSchemaType>;
 }
 
@@ -40,6 +40,12 @@ export default function UserProfileEditEducation({
   setFormValue,
 }: UserProfileEditEducationProps) {
   const [isActive, setIsActive] = useState<boolean>(field.isActive);
+
+  // prevents an endDate default value from a removed section to appear in the added new section
+  let endDateDefaultValue: string | undefined = undefined;
+  if (field.endDate) {
+    endDateDefaultValue = field.endDate.toISOString().split("T")[0];
+  }
 
   return (
     <Card className="flex flex-col gap-4">
@@ -122,11 +128,7 @@ export default function UserProfileEditEducation({
                     render={({ field }) => (
                       <Input
                         type="date"
-                        defaultValue={
-                          field.value instanceof Date
-                            ? field.value.toISOString().split("T")[0]
-                            : undefined
-                        }
+                        defaultValue={endDateDefaultValue}
                         onChange={(e) => {
                           field.onChange(e.target.valueAsDate || undefined);
                         }}
