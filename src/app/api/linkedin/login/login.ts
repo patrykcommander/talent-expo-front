@@ -1,9 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getAuth } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
 import { getUser } from "@/server/queries/getUser";
+import { auth } from "@clerk/nextjs/server";
 
-export async function GET(req: NextRequest) {
-  const { userId } = getAuth(req);
+export async function GET() {
+  const { userId } = await auth();
 
   if (!userId) {
     return NextResponse.redirect(
@@ -11,7 +11,7 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  const user = await getUser(userId);
+  const user = await getUser();
 
   const LINKEDIN_CLIENT_ID = process.env.LINKEDIN_CLIENT_ID;
   const redirect_uri = "http://localhost:3000/profile";

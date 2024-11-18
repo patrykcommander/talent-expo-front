@@ -6,18 +6,24 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import replaceEmptyStringWithNull from "@/lib/replaceEmptyStringWithNull";
 
+import data from "@/ISO-639.json";
+
 const findIndices = (
-  array: string[] | [],
-  condition: (id: string, index: number) => boolean
-) =>
+  array: (string | number)[],
+  condition: (id: string | number, index: number) => boolean
+): number[] =>
   array.length > 0
     ? array
         .map((id, index) => (condition(id, index) ? index : -1))
         .filter((index) => index !== -1)
     : [];
 
-const splitIds = (originalIds: string[], newIds: string[]) => {
-  const indexToCreate = findIndices(newIds, (id) => id === null);
+const splitIds = (
+  originalIds: (string | number)[],
+  newIds: (string | number)[],
+  emptyId: number | null
+) => {
+  const indexToCreate = findIndices(newIds, (id) => id === emptyId);
   const indexToUpdate = findIndices(newIds, (id) => originalIds.includes(id));
   const indexToDelete = findIndices(originalIds, (id) => !newIds.includes(id));
 
@@ -44,6 +50,7 @@ export const updateUserProfile = async (
       phoneNumber,
       education,
       experience,
+      language,
     } = values;
 
     // Fetch the original education and experience IDs from the database
@@ -63,13 +70,25 @@ export const updateUserProfile = async (
       })
     ).map((experience: { id: string }) => experience.id);
 
-    // Get new education and experience IDs
+    const languagesAllCodes = Array.from(data).map(
+      (language, _) => language.value
+    );
+
+    // Get new array of IDs from form
     const newEducationIds = education.map((edu) => edu.id);
     const newExperienceIds = experience.map((exp) => exp.id);
 
     // Split IDs into categories for create, update, and delete actions
-    const educationIndexes = splitIds(originalEducationIds, newEducationIds);
-    const experienceIndexes = splitIds(originalExperienceIds, newExperienceIds);
+    const educationIndexes = splitIds(
+      originalEducationIds,
+      newEducationIds,
+      null
+    );
+    const experienceIndexes = splitIds(
+      originalExperienceIds,
+      newExperienceIds,
+      null
+    );
 
     // Create, update, and delete education entries
     // TODO remove or use the id property in rest of the created objects

@@ -22,9 +22,14 @@ import { Button } from "@/components/ui/button";
 import UserProfileEditEducation from "./user-profile-edit-education";
 import { sortByIsActive } from "@/lib/sortByIsActive";
 import { updateUserProfile } from "@/server/actions/updateUserProfile";
-import { blankEducation, blankExperience } from "./form-constants";
+import {
+  blankEducation,
+  blankExperience,
+  blankLanguage,
+} from "./form-constants";
 import UserProfileEditExperience from "./user-profile-edit-experience";
 import setFormDefaultValues from "@/lib/setFormDefaultValues";
+import UserProfileEditLanguage from "./user-profile-edit-language";
 
 interface UserEditProfileFormProps {
   user: User;
@@ -43,6 +48,14 @@ export default function UserEditProfileForm({
     user.experience
   ) as ExperienceFormEntry[];
 
+  const userLanguages = user.languageLink.map((link, index) => {
+    return {
+      id: link.languageId,
+      proficiency: link.proficiency,
+      languageCode: link.language.languageCode,
+    };
+  });
+
   const sortedUserEducation = sortByIsActive(userEducation);
   const sortedUserExperience = sortByIsActive(userExperience);
 
@@ -57,6 +70,7 @@ export default function UserEditProfileForm({
       phoneNumber: user.phoneNumber || "",
       education: sortedUserEducation || [],
       experience: sortedUserExperience || [],
+      language: userLanguages || [],
     },
   });
   const errors = form.formState.errors;
@@ -68,6 +82,11 @@ export default function UserEditProfileForm({
 
   const experienceFieldArray = useFieldArray({
     name: "experience",
+    control: form.control,
+  });
+
+  const languageFieldArray = useFieldArray({
+    name: "language",
     control: form.control,
   });
 
@@ -178,6 +197,29 @@ export default function UserEditProfileForm({
             )}
           />
           <div className="w-full">
+            <p className="font-semibold text-lg pb-2">Languages</p>
+            <div className="flex flex-col gap-8">
+              {languageFieldArray.fields.map((field, index) => (
+                <UserProfileEditLanguage
+                  key={field.id}
+                  index={index}
+                  errors={errors?.education?.[index] ?? undefined}
+                  removeLanguage={languageFieldArray.remove}
+                />
+              ))}
+              <Button
+                type="button"
+                variant="default"
+                size="lg"
+                onClick={() => {
+                  languageFieldArray.append(blankLanguage);
+                }}
+              >
+                Add new Language
+              </Button>
+            </div>
+          </div>
+          <div className="w-full">
             <p className="font-semibold text-lg pb-2">Education</p>
             <div className="flex flex-col gap-8">
               {educationFieldArray.fields.map((field, index) => (
@@ -188,7 +230,7 @@ export default function UserEditProfileForm({
                   errors={errors?.education?.[index] ?? undefined}
                   register={form.register}
                   removeEducation={educationFieldArray.remove}
-                  setFormValue={form.setValue}
+                  resetFormValue={form.resetField}
                 />
               ))}
               <Button
@@ -214,7 +256,7 @@ export default function UserEditProfileForm({
                   errors={errors?.experience?.[index] ?? undefined}
                   register={form.register}
                   removeExperience={experienceFieldArray.remove}
-                  setFormValue={form.setValue}
+                  resetFormValue={form.resetField}
                 />
               ))}
               <Button

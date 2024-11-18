@@ -1,23 +1,14 @@
-import React from "react";
-import { auth } from "@clerk/nextjs";
-import { redirect } from "next/navigation";
+import React, { Suspense } from "react";
 import UserProfileContainer from "@/components/user-profile/user-profile-container/user-profile-contaier";
-import EmptyState from "@/components/empty-state/empty-state";
+import { getUser } from "@/server/queries/getUser";
+import { User } from "@/types";
 
-export default function page() {
-  const { userId } = auth();
-
-  if (userId === null) {
-    redirect("/home");
-  }
+export default async function page() {
+  const user: User | null = await getUser();
 
   return (
-    <>
-      {userId !== null ? (
-        <UserProfileContainer userId={userId} />
-      ) : (
-        <EmptyState message="" />
-      )}
-    </>
+    <Suspense fallback={<div>Loading...</div>}>
+      <UserProfileContainer user={user} />
+    </Suspense>
   );
 }

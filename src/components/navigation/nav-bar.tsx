@@ -1,10 +1,10 @@
 import React from "react";
 import { NavOptions } from "./nav-options";
 import NavItem from "./nav-item";
-import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 
-export default function NavBar() {
-  const { userId } = auth();
+export default async function NavBar() {
+  const { userId } = await auth();
 
   const profileHrefCustomClass =
     userId === null ? "cursor-default text-gray" : "";

@@ -35,7 +35,7 @@ const userEducationSchema = z
   .refine(
     (schema) => {
       // if user specifies that education period is inActive, check if endDate is not null
-      if (!schema.isActive) return schema.endDate !== null;
+      if (!schema.isActive) return schema.endDate !== "";
       else return true;
     },
     { message: "End Date should be a valid date", path: ["endDate"] }
@@ -88,11 +88,17 @@ const userExperienceSchema = z
   .refine(
     (schema) => {
       // if user specifies that experience period is inActive, check if endDate is not null
-      if (!schema.isActive) return schema.endDate !== null;
+      if (!schema.isActive) return schema.endDate !== "";
       else return true;
     },
     { message: "End Date should be a valid date", path: ["endDate"] }
   );
+
+const userLanguageSchema = z.object({
+  id: z.number(),
+  languageCode: z.string(),
+  proficiency: z.string(),
+});
 
 export const userProfileEditFormSchema = () =>
   z.object({
@@ -104,4 +110,5 @@ export const userProfileEditFormSchema = () =>
     phoneNumber: z.string().optional(),
     education: z.array(userEducationSchema).optional().default([]),
     experience: z.array(userExperienceSchema).optional().default([]),
+    language: z.array(userLanguageSchema).optional().default([]),
   });

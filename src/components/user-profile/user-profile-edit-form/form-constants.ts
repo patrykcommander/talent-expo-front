@@ -1,4 +1,4 @@
-import { EducationFormEntry, ExperienceFormEntry } from "@/types";
+import { EducationFormEntry, ExperienceFormEntry, SelectOption } from "@/types";
 
 export const blankEducation: EducationFormEntry = {
   id: "",
@@ -23,3 +23,32 @@ export const blankExperience: ExperienceFormEntry = {
   startDate: new Date(),
   endDate: undefined,
 };
+
+export const blankLanguage = {
+  id: 0,
+  languageCode: "",
+  proficiency: "",
+};
+
+export const LANGUAGE_PROFICIENCY_OPTIONS: SelectOption[] = [
+  {
+    label: "Elementary",
+    value: "ELEMENTARY",
+  },
+  {
+    label: "Intermediate",
+    value: "INTERMEDIATE",
+  },
+  {
+    label: "Advanced",
+    value: "ADVANCED",
+  },
+  {
+    label: "Fluent",
+    value: "FLUENT",
+  },
+  {
+    label: "Native",
+    value: "NATIVE",
+  },
+];

@@ -10,7 +10,7 @@ export default function UserExperience({ user }: { user: User }) {
 
   return (
     <Card className="flex flex-col w-full p-4 gap-4">
-      <p className="text-lg font-semibold lg:border-b-2 border-gray w-full lg:w-1/4">
+      <p className="text-lg font-semibold border-b-2 border-gray w-[220px]">
         Experience
       </p>
       {user.education && user.education.length > 0 ? (

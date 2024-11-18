@@ -4,23 +4,15 @@ import React, { useState } from "react";
 import {
   Controller,
   FieldArrayWithId,
-  UseFieldArrayRemove,
   UseFormRegister,
-  UseFormSetValue,
+  UseFormResetField,
 } from "react-hook-form";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { EducationError, FullProfileFormSchemaType } from "@/types";
-
-const ErrorMessage: React.FC<{ message: string | undefined }> = ({
-  message,
-}) => {
-  return (
-    <p className="text-sm text-red-500">{message || "Wrong input data"}</p>
-  );
-};
+import ErrorMessage from "@/components/error-message/error-message";
 
 interface UserProfileEditEducationProps {
   index: number;
@@ -28,7 +20,7 @@ interface UserProfileEditEducationProps {
   errors: EducationError | undefined;
   register: UseFormRegister<FullProfileFormSchemaType>;
   removeEducation: (index: number) => void;
-  setFormValue: UseFormSetValue<FullProfileFormSchemaType>;
+  resetFormValue: UseFormResetField<FullProfileFormSchemaType>;
 }
 
 export default function UserProfileEditEducation({
@@ -37,15 +29,9 @@ export default function UserProfileEditEducation({
   errors,
   register,
   removeEducation,
-  setFormValue,
+  resetFormValue,
 }: UserProfileEditEducationProps) {
   const [isActive, setIsActive] = useState<boolean>(field.isActive);
-
-  // prevents an endDate default value from a removed section to appear in the added new section
-  let endDateDefaultValue: string | undefined = undefined;
-  if (field.endDate) {
-    endDateDefaultValue = field.endDate.toISOString().split("T")[0];
-  }
 
   return (
     <Card className="flex flex-col gap-4">
@@ -80,7 +66,10 @@ export default function UserProfileEditEducation({
               <Checkbox
                 checked={field.value}
                 onCheckedChange={() => {
-                  setFormValue(`education.${index}.endDate`, undefined);
+                  console.log("Setting value");
+                  resetFormValue(`education.${index}.endDate`, {
+                    defaultValue: "",
+                  });
                   setIsActive(!isActive);
                   field.onChange(!field.value);
                 }}
@@ -128,7 +117,11 @@ export default function UserProfileEditEducation({
                     render={({ field }) => (
                       <Input
                         type="date"
-                        defaultValue={endDateDefaultValue}
+                        defaultValue={
+                          field.value instanceof Date
+                            ? field.value.toISOString().split("T")[0]
+                            : ""
+                        }
                         onChange={(e) => {
                           field.onChange(e.target.valueAsDate || undefined);
                         }}

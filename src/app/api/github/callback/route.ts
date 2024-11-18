@@ -1,10 +1,9 @@
 import { prisma } from "@/db/prisma";
-import { getAuth } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: NextRequest, res: NextResponse) {
-  // Get the current Clerk user ID
-  const { userId } = getAuth(req);
+export async function GET(req: NextRequest) {
+  const { userId } = await auth();
 
   if (!userId) {
     return NextResponse.redirect(

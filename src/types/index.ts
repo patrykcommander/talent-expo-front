@@ -7,6 +7,11 @@ export type NavOption = {
   href: string;
 };
 
+export type SelectOption = {
+  label: string;
+  value: string;
+};
+
 export type NextAuthUser = {
   name?: string | null;
   email?: string | null;
@@ -37,6 +42,7 @@ export type User = {
   updated_at: Date;
   education: EducationPrisma[];
   experience: ExperiencePrisma[];
+  languageLink: LanguageLink[];
 };
 
 export type EducationFormEntry = {
@@ -93,6 +99,23 @@ export type ExperiencePrisma = {
   endDate?: Date | null;
 };
 
+export type LanguagePrisma = {
+  id: number;
+  languageName: string;
+  languageCode: string;
+  created_at: Date;
+  updated_at: Date;
+};
+
+export type LanguageLink = {
+  userClerkId: string;
+  languageId: number;
+  language: LanguagePrisma;
+  proficiency: "ELEMENTARY" | "INTERMEDIATE" | "ADVANCED" | "FLUENT" | "NATIVE";
+  created_at: Date;
+  updated_at: Date;
+};
+
 export type EducationError = Merge<
   FieldError,
   FieldErrorsImpl<{
@@ -118,6 +141,14 @@ export type ExperienceError = Merge<
     isActive: boolean;
     startDate: Date;
     endDate: Date;
+  }>
+>;
+
+export type LanguageError = Merge<
+  FieldError,
+  FieldErrorsImpl<{
+    languageName: string;
+    proficiency: string;
   }>
 >;
 

@@ -2,8 +2,15 @@
 
 import { prisma } from "@/db/prisma";
 import { User } from "@/types";
+import { auth } from "@clerk/nextjs/server";
 
-export const getUser = async (userId: string): Promise<User | null> => {
+export const getUser = async (): Promise<User | null> => {
+  const { userId } = await auth();
+
+  if (!userId) {
+    return null;
+  }
+
   try {
     const user = await prisma.user.findUnique({
       where: {
@@ -18,6 +25,11 @@ export const getUser = async (userId: string): Promise<User | null> => {
         experience: {
           orderBy: {
             startDate: "desc",
+          },
+        },
+        languageLink: {
+          include: {
+            language: true,
           },
         },
       },
