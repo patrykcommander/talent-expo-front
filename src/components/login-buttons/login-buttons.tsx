@@ -1,6 +1,6 @@
 import React from "react";
-import SignOut from "../buttons/sign-out";
 import { auth } from "@clerk/nextjs/server";
+import SignOut from "../buttons/sign-out";
 import RedirectButton from "../buttons/redirect-button";
 
 export default async function LogginButtons() {

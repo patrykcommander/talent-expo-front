@@ -3,7 +3,7 @@ import Image from "next/image";
 
 export default function Logo() {
   return (
-    <div className="flex w-1/4 lg:w-2/12 items-center justify-center">
+    <div className="flex w-[240px] lg:w-2/12 items-center justify-center">
       <Image
         src="/logo_cleared.png"
         alt="userImage"

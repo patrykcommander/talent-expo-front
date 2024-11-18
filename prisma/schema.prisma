@@ -1,0 +1,99 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ROLE {
+  USER
+  ORGANIZER
+}
+
+enum LANGUAGE_PROFICIENCY {
+  ELEMENTARY
+  INTERMEDIATE
+  ADVANCED
+  FLUENT
+  NATIVE
+}
+
+model User {
+  id             String         @id @default(uuid())
+  clerkId        String         @unique
+  role           ROLE           @default(USER)
+  name           String
+  email          String
+  imageUrl       String?
+  linkedInUrl    String?
+  githubUserName String?
+  bio            String?        @db.Text
+  location       String?        @db.VarChar(100)
+  phoneNumber    String?        @db.VarChar(14)
+  created_at     DateTime       @default(now())
+  updated_at     DateTime       @default(now())
+  education      Education[]
+  experience     Experience[]
+  languageLink   LanguageLink[]
+}
+
+model Education {
+  id           String    @id @default(uuid())
+  userClerkId  String
+  user         User      @relation(fields: [userClerkId], references: [clerkId])
+  degree       String
+  institution  String
+  fieldOfStudy String
+  thesisTopic  String?
+  grade        String?
+  startDate    DateTime
+  endDate      DateTime?
+  isActive     Boolean   @default(false)
+  created_at   DateTime  @default(now())
+  updated_at   DateTime  @default(now())
+}
+
+model Experience {
+  id             String    @id @default(uuid())
+  userClerkId    String
+  user           User      @relation(fields: [userClerkId], references: [clerkId])
+  role           String
+  companyName    String
+  location       String
+  description    String?   @db.Text
+  employmentType String?
+  isActive       Boolean   @default(false)
+  startDate      DateTime
+  endDate        DateTime?
+  created_at     DateTime  @default(now())
+  updated_at     DateTime  @default(now())
+}
+
+model Language {
+  id           Int            @id @default(autoincrement())
+  languageName String
+  languageCode String
+  created_at   DateTime       @default(now())
+  updated_at   DateTime       @default(now())
+  LanguageLink LanguageLink[]
+}
+
+model LanguageLink {
+  userClerkId String
+  user        User                 @relation(fields: [userClerkId], references: [clerkId])
+  languageId  Int
+  language    Language             @relation(fields: [languageId], references: [id])
+  proficiency LANGUAGE_PROFICIENCY
+  created_at  DateTime             @default(now())
+  updated_at  DateTime             @default(now())
+
+  @@id([userClerkId, languageId])
+}

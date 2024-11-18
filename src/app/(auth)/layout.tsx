@@ -1,7 +1,4 @@
-import NavBar from "@/components/navigation/nav-bar";
-import { ClerkProvider } from "@clerk/nextjs";
-
-export default function RootLayout({
+export default function layout({
   children,
 }: Readonly<{
   children: React.ReactNode;

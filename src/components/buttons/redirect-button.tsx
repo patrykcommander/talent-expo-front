@@ -1,27 +1,24 @@
 "use client";
 
 import React from "react";
-import { Button } from "../ui/button";
-import { signIn } from "next-auth/react";
 import Link from "next/link";
+import { Button } from "../ui/button";
 
 interface RedirectButtonProps {
   label: string;
   href: string;
   size?: "default" | "sm" | "lg" | "icon";
+  customClass?: string;
 }
 
 export default function RedirectButton({
   label,
   href,
   size,
+  customClass,
 }: RedirectButtonProps) {
   return (
-    <Button
-      size={size}
-      variant="outline"
-      //onClick={() => signIn(undefined, { callbackUrl: "/profile" })}
-    >
+    <Button className={customClass} size={size} variant="outline">
       <Link href={href}>{label}</Link>
     </Button>
   );

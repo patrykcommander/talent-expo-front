@@ -1,7 +1,7 @@
 import React from "react";
+import { auth } from "@clerk/nextjs/server";
 import { NavOptions } from "./nav-options";
 import NavItem from "./nav-item";
-import { auth } from "@clerk/nextjs/server";
 
 export default async function NavBar() {
   const { userId } = await auth();

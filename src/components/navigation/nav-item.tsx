@@ -1,10 +1,10 @@
 "use client";
 
 import React from "react";
-import { NavOption } from "@/types";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
+import { NavOption } from "@/types";
 
 interface NavItemProps extends NavOption {
   customClass?: string;
