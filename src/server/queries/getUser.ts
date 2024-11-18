@@ -37,7 +37,7 @@ export const getUser = async (): Promise<User | null> => {
 
     return user;
   } catch (err) {
-    console.log(err);
+    console.log("Error: ", JSON.stringify(err));
     return null;
   }
 };

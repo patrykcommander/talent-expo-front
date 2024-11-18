@@ -1,9 +1,10 @@
 "use server";
 
 import { prisma } from "@/db/prisma";
-import { userProfileEditFormSchema } from "../schemas/userProfileEditFormSchema";
+import { LANGUAGE_PROFICIENCY } from "@prisma/client";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
+import { userProfileEditFormSchema } from "../schemas/userProfileEditFormSchema";
 import replaceEmptyStringWithNull from "@/lib/replaceEmptyStringWithNull";
 
 import data from "@/ISO-639.json";
@@ -70,13 +71,29 @@ export const updateUserProfile = async (
       })
     ).map((experience: { id: string }) => experience.id);
 
-    const languagesAllCodes = Array.from(data).map(
-      (language, _) => language.value
+    const allLanguagesCodes = Array.from(data).map(
+      (language) => language.value
     );
 
-    // Get new array of IDs from form
+    const originalLanguages = (
+      await prisma.languageLink.findMany({
+        where: {
+          userClerkId: userId,
+        },
+        include: {
+          language: {
+            select: {
+              id: true,
+            },
+          },
+        },
+      })
+    ).map((link, index) => link.language.id);
+
+    // Get new array of IDs
     const newEducationIds = education.map((edu) => edu.id);
     const newExperienceIds = experience.map((exp) => exp.id);
+    const newLanguageIds = language.map((lang) => lang.id);
 
     // Split IDs into categories for create, update, and delete actions
     const educationIndexes = splitIds(
@@ -90,8 +107,9 @@ export const updateUserProfile = async (
       null
     );
 
+    const languageIndexes = splitIds(originalLanguages, newLanguageIds, 0);
+
     // Create, update, and delete education entries
-    // TODO remove or use the id property in rest of the created objects
     const educationToCreate = educationIndexes.indexToCreate.map((index) => {
       const { id, ...rest } = education[index];
       return {
@@ -135,6 +153,34 @@ export const updateUserProfile = async (
       (index) => originalExperienceIds[index]
     );
 
+    // Create, update, and delete language entries
+    const languageToCreate = languageIndexes.indexToCreate.map((index) => {
+      return {
+        userClerkId: userId,
+        languageId: allLanguagesCodes.indexOf(language[index].languageCode) + 1,
+        proficiency: language[index].proficiency as LANGUAGE_PROFICIENCY,
+      };
+    });
+
+    const languageToUpdate = languageIndexes.indexToUpdate.map((index) => {
+      return {
+        where: {
+          userClerkId_languageId: {
+            userClerkId: userId,
+            languageId:
+              allLanguagesCodes.indexOf(language[index].languageCode) + 1,
+          },
+        },
+        data: {
+          proficiency: language[index].proficiency as LANGUAGE_PROFICIENCY,
+        },
+      };
+    });
+
+    const languageToDelete = languageIndexes.indexToDelete.map(
+      (index) => originalLanguages[index]
+    );
+
     // Update the user's profile with new data
     await prisma.user.update({
       where: {
@@ -152,6 +198,9 @@ export const updateUserProfile = async (
         },
         experience: {
           update: experienceToUpdate,
+        },
+        languageLink: {
+          update: languageToUpdate,
         },
       },
     });
@@ -192,12 +241,30 @@ export const updateUserProfile = async (
       });
     }
 
+    // Delete removed language entries
+    if (languageToDelete.length > 0) {
+      await prisma.languageLink.deleteMany({
+        where: {
+          languageId: {
+            in: languageToDelete,
+          },
+        },
+      });
+    }
+
+    // Create new language entries
+    if (languageToCreate.length > 0) {
+      await prisma.languageLink.createMany({
+        data: languageToCreate,
+      });
+    }
+
     // Revalidate the profile edit page
     revalidatePath("/profile/me/edit");
 
     return { success: true, message: "Profile updated" };
   } catch (err) {
-    console.log("Error: ", err);
+    console.log("Error: ", JSON.stringify(err));
     return { success: false, message: "Error while updating the profile" };
   }
 };

@@ -11,7 +11,9 @@
     "db:push": "npx prisma db push",
     "db:studio": "prisma studio",
     "db:drop": "prisma migrate reset",
-    "db:seed": "node ./prisma/seed.js"
+    "db:seed": "node ./prisma/seed.js",
+    "postinstall": "prisma generate",
+    "vercel-build": "prisma generate && prisma migrate deploy && next build"
   },
   "dependencies": {
     "@clerk/nextjs": "6.3.4",

@@ -30,6 +30,7 @@ import {
 import UserProfileEditExperience from "./user-profile-edit-experience";
 import setFormDefaultValues from "@/lib/setFormDefaultValues";
 import UserProfileEditLanguage from "./user-profile-edit-language";
+import ErrorMessage from "@/components/error-message/error-message";
 
 interface UserEditProfileFormProps {
   user: User;
@@ -197,7 +198,12 @@ export default function UserEditProfileForm({
             )}
           />
           <div className="w-full">
-            <p className="font-semibold text-lg pb-2">Languages</p>
+            <p className="font-semibold text-lg pb-2">Languages</p>{" "}
+            {errors && errors.language && (
+              <div className="pb-2">
+                <ErrorMessage message={errors.language.root?.message} />
+              </div>
+            )}
             <div className="flex flex-col gap-8">
               {languageFieldArray.fields.map((field, index) => (
                 <UserProfileEditLanguage
@@ -271,9 +277,15 @@ export default function UserEditProfileForm({
               </Button>
             </div>
           </div>
-          <Button variant="secondary" size="lg" type="submit">
-            Submit
-          </Button>
+          <div className="flex flex-row gap-4 items-center">
+            <Button variant="secondary" size="lg" type="submit">
+              Submit
+            </Button>
+            {errors &&
+              (errors.language || errors.education || errors.experience) && (
+                <ErrorMessage message="Please check for errors" />
+              )}
+          </div>
         </form>
       </Form>
     </>

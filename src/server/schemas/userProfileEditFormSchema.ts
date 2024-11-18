@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z, ZodType } from "zod";
 
 const userEducationSchema = z
   .object({
@@ -100,6 +100,25 @@ const userLanguageSchema = z.object({
   proficiency: z.string(),
 });
 
+const uniqueArray = (schema: ZodType) => {
+  return z.array(schema).refine(
+    (items) => {
+      const languageIds = items.map((item) => item.languageCode);
+
+      const newLanguagesCount = languageIds.filter((id) => id === 0).length;
+      const updatedLanguagesIds = languageIds.filter((id) => id !== 0);
+
+      return (
+        new Set(updatedLanguagesIds).size ===
+        languageIds.length - newLanguagesCount
+      );
+    },
+    {
+      message: "No duplicates allowed",
+    }
+  );
+};
+
 export const userProfileEditFormSchema = () =>
   z.object({
     imageUrl: z.string().optional(),
@@ -110,5 +129,5 @@ export const userProfileEditFormSchema = () =>
     phoneNumber: z.string().optional(),
     education: z.array(userEducationSchema).optional().default([]),
     experience: z.array(userExperienceSchema).optional().default([]),
-    language: z.array(userLanguageSchema).optional().default([]),
+    language: uniqueArray(userLanguageSchema),
   });
