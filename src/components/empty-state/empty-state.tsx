@@ -1,6 +1,6 @@
 import React from "react";
-import { Card } from "../ui/card";
 import clsx from "clsx";
+import { Card } from "../ui/card";
 
 interface EmptyStateProps {
   message: string;

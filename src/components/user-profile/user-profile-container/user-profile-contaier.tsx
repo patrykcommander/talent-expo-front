@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React from "react";
 import Main from "../main/main";
 import GithubSection from "../github-section/github-section";
 import EmptyState from "@/components/empty-state/empty-state";

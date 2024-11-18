@@ -3,10 +3,10 @@
 import React, { useState } from "react";
 import clsx from "clsx";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { getUserRepos } from "@/server/queries/getUserRepos";
 import { RepoComponent } from "./github-repo-component";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight } from "lucide-react";
 import { ELEMENTS_PER_PAGE } from "./pagination";
 import EmptyState from "@/components/empty-state/empty-state";
 import { Skeleton } from "@/components/ui/skeleton";

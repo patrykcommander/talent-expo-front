@@ -1,7 +1,7 @@
 import React from "react";
+import CustomQueryProvider from "@/context/CustomQueryProvider";
 import { Card } from "@/components/ui/card";
 import GithubRepos from "./github-repos";
-import CustomQueryProvider from "@/context/CustomQueryProvider";
 
 export default async function GithubSection({
   githubUserName,

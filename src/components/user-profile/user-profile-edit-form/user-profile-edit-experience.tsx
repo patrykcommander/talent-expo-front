@@ -11,9 +11,9 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ExperienceError, FullProfileFormSchemaType } from "@/types";
 import { Textarea } from "@/components/ui/textarea";
 import ErrorMessage from "@/components/error-message/error-message";
+import { ExperienceError, FullProfileFormSchemaType } from "@/types";
 
 interface UserProfileEditExperienceProps {
   index: number;

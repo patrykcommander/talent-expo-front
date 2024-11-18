@@ -1,8 +1,8 @@
+import { ClerkProvider } from "@clerk/nextjs";
 import NavBar from "@/components/navigation/nav-bar";
 import Logo from "@/components/logo/logo";
 import LogginButtons from "@/components/login-buttons/login-buttons";
 import MobileMenu from "@/components/navigation/mobile-menu";
-import { ClerkProvider } from "@clerk/nextjs";
 
 export default function layout({ children }: { children: React.ReactNode }) {
   return (

@@ -1,9 +1,9 @@
 "use client";
 
 import React from "react";
+import { formatDate, formatDistance, parseISO } from "date-fns";
 import { GithubRepo } from "@/types";
 import { Card } from "@/components/ui/card";
-import { formatDate, formatDistance, parseISO } from "date-fns";
 import {
   Dialog,
   DialogContent,

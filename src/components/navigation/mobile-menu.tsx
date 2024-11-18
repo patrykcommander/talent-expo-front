@@ -1,13 +1,13 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
+import { useAuth } from "@clerk/nextjs";
+import clsx from "clsx";
 import { Menu } from "lucide-react";
 import { NavOptions } from "./nav-options";
 import RedirectButton from "../buttons/redirect-button";
 import SignOut from "../buttons/sign-out";
-import Link from "next/link";
-import clsx from "clsx";
-import { useAuth } from "@clerk/nextjs";
 
 export default function MobileMenu() {
   const { userId } = useAuth();

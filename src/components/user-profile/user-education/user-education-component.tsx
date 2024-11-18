@@ -1,7 +1,7 @@
 import React from "react";
+import clsx from "clsx";
 import { EducationPrisma } from "@/types";
 import { formatISO } from "@/lib/date";
-import clsx from "clsx";
 import { Card } from "@/components/ui/card";
 
 interface UserEducationEntryProps {
