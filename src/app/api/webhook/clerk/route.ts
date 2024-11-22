@@ -59,7 +59,11 @@ export async function POST(req: Request) {
     const { id, username, created_at, updated_at, image_url, email_addresses } =
       evt.data as UserJSON;
 
-    console.log(email_addresses);
+    const githubUserName =
+      evt.data.external_accounts[0].provider === "oauth_github"
+        ? evt.data.external_accounts[0].username
+        : null;
+
     try {
       await prisma.user.upsert({
         where: {
@@ -69,6 +73,7 @@ export async function POST(req: Request) {
           imageUrl: image_url,
           updated_at: new Date(updated_at),
           email: email_addresses[0].email_address,
+          githubUserName: githubUserName,
         },
         create: {
           clerkId: id,
@@ -77,8 +82,11 @@ export async function POST(req: Request) {
           updated_at: new Date(updated_at),
           name: username || "",
           email: email_addresses[0].email_address,
+          githubUserName: githubUserName,
         },
       });
+
+      return new Response("User event handled properly", { status: 200 });
     } catch (err) {
       return new Response("Error: Could not create / update the user", {
         status: 500,
