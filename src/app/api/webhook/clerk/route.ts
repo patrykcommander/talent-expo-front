@@ -8,7 +8,7 @@ import {
 import { prisma } from "@/db/prisma";
 
 export async function POST(req: Request) {
-  const SIGNING_SECRET = process.env.SIGNING_SECRET;
+  const SIGNING_SECRET = process.env.CLERK_SIGNING_SECRET;
 
   if (!SIGNING_SECRET) {
     throw new Error(
