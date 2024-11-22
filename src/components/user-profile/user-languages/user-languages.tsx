@@ -1,6 +1,7 @@
 import React from "react";
 import { User } from "@/types";
 import { Card } from "@/components/ui/card";
+import EmptyState from "@/components/empty-state/empty-state";
 
 interface UserLanguagesProps {
   user: User;
@@ -17,12 +18,16 @@ export default function UserLanguages({ user }: UserLanguagesProps) {
         Languages
       </p>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full">
-        {user.languageLink.map((link, index) => (
-          <Card key={index} className="grid grid-cols-2 gap-2">
-            <p>{link.language.languageName}</p>
-            <p>{formatLangProficiency(link.proficiency)}</p>
-          </Card>
-        ))}
+        {user.languageLink.length > 0 ? (
+          user.languageLink.map((link, index) => (
+            <Card key={index} className="grid grid-cols-2 gap-2">
+              <p>{link.language.languageName}</p>
+              <p>{formatLangProficiency(link.proficiency)}</p>
+            </Card>
+          ))
+        ) : (
+          <EmptyState message="No data provided yet" />
+        )}
       </div>
     </Card>
   );
