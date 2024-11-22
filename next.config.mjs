@@ -8,7 +8,7 @@ const nextConfig = {
         pathname: "**",
       },
       {
-        protocolo: "https",
+        protocol: "https",
         hostname: "img.clerk.com",
         pathname: "**",
       },
